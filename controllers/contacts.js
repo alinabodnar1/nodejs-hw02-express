@@ -17,6 +17,12 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
+   if (req.body === {}) {
+      res.status(400).json({
+        message: `missing fields`,
+      });
+      return;
+    }
   const result = await contacts.addContact(req.body);
   res.status(201).json(result);
 };
@@ -34,6 +40,12 @@ const deleteById = async (req, res) => {
 
 const updateById = async (req, res) => {
   const { id } = req.params;
+   if (req.body === {}) {
+      res.status(400).json({
+        message: `missing fields`,
+      });
+      return;
+    }
   const result = await contacts.updateContact(id, req.body);
   res.json(result);
 };
