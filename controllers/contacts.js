@@ -35,6 +35,14 @@ const deleteById = async (req, res) => {
 const updateById = async (req, res) => {
   const { id } = req.params;
   const result = await contacts.updateContact(id, req.body);
+
+  if (result === null) {
+    res.status(404).json({
+      message: "Not found",
+    });
+    return;
+  }
+
   res.json(result);
 };
 
