@@ -22,10 +22,10 @@ const contactSchema = new Schema({
 contactSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string(),
-  phone: Joi.string(),
-  favorite: Joi.boolean(),
+  name: Joi.string().min(3).max(30).required().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  favorite: Joi.boolean().required(),
 });
 
 const updateFavoriteSchema = Joi.object({
