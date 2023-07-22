@@ -1,6 +1,6 @@
 const validateBody = (schema) => {
   const func = (req, res, next) => {
-    
+    // Якщо нема цілого боді
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
       res.status(400).json({
         message: "missing fields",
@@ -9,10 +9,35 @@ const validateBody = (schema) => {
     }
 
     const { error } = schema.validate(req.body);
+    console.log("Error from schema:", error);
 
-    if (error) {
+    // Якщо нема якогось поля взагалі
+    if (error.details[0].type === "any.required") {
       res.status(400).json({
-        message: `missing required ${error.details[0].context.key} field`,
+        message: `${error.details[0].message}`,
+      });
+      return;
+    }
+
+    // Якщо в полі порожній рядок
+    if (error.details[0].type === "string.empty") {
+      res.status(400).json({
+        message: `${error.details[0].message}`,
+      });
+      return;
+    }
+    // Якщо ввели кількість символів  > 12
+    if (error.details[0].type === "string.max") {
+      res.status(400).json({
+        message: `${error.details[0].message}`,
+      });
+      return;
+    }
+
+    // Якщо вели кількість символів  < 3
+    if (error.details[0].type === "string.min") {
+      res.status(400).json({
+        message: `Name should have a minimum length of 3`,
       });
       return;
     }
@@ -23,7 +48,6 @@ const validateBody = (schema) => {
 
 const validateBodyFavorite = (schema) => {
   const func = (req, res, next) => {
-    
     const { error } = schema.validate(req.body);
     if (error) {
       res.status(400).json({
@@ -32,11 +56,11 @@ const validateBodyFavorite = (schema) => {
       return;
     }
     next();
-  }
+  };
   return func;
 };
 
 module.exports = {
   validateBody,
   validateBodyFavorite,
-}
+};

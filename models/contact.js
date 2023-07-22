@@ -21,12 +21,19 @@ const contactSchema = new Schema({
 
 contactSchema.post("save", handleMongooseError);
 
+
 const addSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required().required(),
-  email: Joi.string().required(),
+  name: Joi.string().min(3).max(12).required().messages({
+    'string.min': `Name should have a minimum length of 3`,
+    'string.max': `Name should have a maximum length of 12`,
+    'any.required': ` Missing required name field`,
+    'string.empty': ` String is empty. Enter name`,
+  }),
+  email: Joi.string().email().required(),
   phone: Joi.string().required(),
-  favorite: Joi.boolean().required(),
+  favorite: Joi.boolean(),
 });
+
 
 const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),

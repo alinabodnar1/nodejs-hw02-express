@@ -12,11 +12,11 @@ router.get("/", getAll);
 
 router.get("/:id", isValidId, getById);
 
-router.post("/", validateBody(schemas.addSchema), add);
+router.post("/", validateBody(schemas.addSchema), add); 
 
 router.delete("/:id", isValidId, deleteById);
 
-router.put("/:id", isValidId, validateBody(schemas.addSchema), updateById);
+router.put("/:id", isValidId, validateBody(schemas.addSchema),updateById); 
 
 router.patch("/:id/favorite", isValidId, validateBodyFavorite(schemas.updateFavoriteSchema), updateStatusContact);
 
