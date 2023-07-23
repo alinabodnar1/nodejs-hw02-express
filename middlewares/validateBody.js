@@ -11,38 +11,25 @@ const validateBody = (schema) => {
     const { error } = schema.validate(req.body);
     console.log("Error from schema:", error);
 
-    // Якщо нема якогось поля взагалі
-    if (error.details[0].type === "any.required") {
-      res.status(400).json({
-        message: `${error.details[0].message}`,
-      });
-      return;
-    }
+    const typeError = error.details[0].type;
 
-    // Якщо в полі порожній рядок
-    if (error.details[0].type === "string.empty") {
-      res.status(400).json({
-        message: `${error.details[0].message}`,
-      });
-      return;
-    }
-    // Якщо ввели кількість символів  > 12
-    if (error.details[0].type === "string.max") {
-      res.status(400).json({
-        message: `${error.details[0].message}`,
-      });
-      return;
-    }
+    const errorMessage = res.status(400).json({
+      message: `${error.details[0].message}`,
+    });
 
-    // Якщо вели кількість символів  < 3
-    if (error.details[0].type === "string.min") {
-      res.status(400).json({
-        message: `Name should have a minimum length of 3`,
-      });
-      return;
-    }
+    if (!error) return;
+
+    if (
+      typeError === "any.required" ||
+      typeError === "string.empty" ||
+      typeError === "string.max" ||
+      typeError === "string.min"
+    ) {
+      return errorMessage;
+    } 
+
     next();
-  };
+}
   return func;
 };
 
