@@ -17,8 +17,6 @@ const validateBody = (schema) => {
       message: `${error.details[0].message}`,
     });
 
-    if (!error) return;
-
     if (
       typeError === "any.required" ||
       typeError === "string.empty" ||
