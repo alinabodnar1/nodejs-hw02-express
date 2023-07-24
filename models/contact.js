@@ -29,8 +29,14 @@ const addSchema = Joi.object({
     'any.required': ` Missing required name field`,
     'string.empty': ` String is empty. Enter name`,
   }),
-  email: Joi.string().email().required(),
-  phone: Joi.string().required(),
+  email: Joi.string().email().required().messages({
+    'any.required': ` Missing required email field`,
+    'string.empty': ` String is empty. Enter email`,
+}),
+  phone: Joi.string().required().messages({
+    'any.required': ` Missing required phone field`,
+    'string.empty': ` String is empty. Enter phone`,
+}),
   favorite: Joi.boolean(),
 });
 

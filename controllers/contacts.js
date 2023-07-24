@@ -53,6 +53,12 @@ const updateById = async (req, res) => {
 const updateStatusContact = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndUpdate(id, req.body, {new: true});
+  if (!result || result === null) {
+    res.status(404).json({
+      message: "Not found",
+    });
+    return;
+  }
   res.json(result);
 }
 
