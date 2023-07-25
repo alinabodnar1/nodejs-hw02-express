@@ -1,6 +1,6 @@
 const validateBody = (schema) => {
   const func = (req, res, next) => {
-    
+    // Якщо нема цілого боді
     if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
       res.status(400).json({
         message: "missing fields",
@@ -9,9 +9,27 @@ const validateBody = (schema) => {
     }
 
     const { error } = schema.validate(req.body);
+
+    if (error) {
+      console.log("Error from schema:", error);
+
+      const errorMessage = res.status(400).json({
+        message: `${error.details[0].message}`,
+      });
+
+        return errorMessage;
+    }
+    next();
+  };
+  return func;
+};
+
+const validateBodyFavorite = (schema) => {
+  const func = (req, res, next) => {
+    const { error } = schema.validate(req.body);
     if (error) {
       res.status(400).json({
-        message: `missing required ${error.details[0].context.key} field`,
+        message: `missing field ${error.details[0].context.key} `,
       });
       return;
     }
@@ -20,4 +38,7 @@ const validateBody = (schema) => {
   return func;
 };
 
-module.exports = validateBody;
+module.exports = {
+  validateBody,
+  validateBodyFavorite,
+};

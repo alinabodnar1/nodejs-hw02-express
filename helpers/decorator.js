@@ -1,7 +1,7 @@
 const decorator = controler => {
   const func = async (req, res, next) => {
     try {
-      await controler(req, res, next)
+      await controler(req, res, next);
     }
     catch (error) {
       const { status = 500, message = "Server error" } = error;

@@ -1,7 +1,7 @@
-const HttpError  = require('./httpError');
 const decorator = require('./decorator');
+const handleMongooseError = require('./handleMongooseError');
 
 module.exports = {
-  HttpError,
   decorator,
+  handleMongooseError,
 }
