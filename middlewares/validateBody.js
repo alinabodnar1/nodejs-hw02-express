@@ -13,20 +13,11 @@ const validateBody = (schema) => {
     if (error) {
       console.log("Error from schema:", error);
 
-      const typeError = error.details[0].type;
-      
       const errorMessage = res.status(400).json({
         message: `${error.details[0].message}`,
       });
 
-      if (
-        typeError === "any.required" ||
-        typeError === "string.empty" ||
-        typeError === "string.max" ||
-        typeError === "string.min"
-      ) {
         return errorMessage;
-      }
     }
     next();
   };
