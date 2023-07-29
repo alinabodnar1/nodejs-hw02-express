@@ -14,8 +14,6 @@ const authentication = async (req, res, next) => {
   // Перевіряємо чи токен валідний
   try {
     const { id } = jwt.verify(token, SECRET_KEY);
-
-    // Перевіряємо чи email, який вводить користувач, є в базі
     const user = await User.findById(id);
 
     if (!user || !user.token || user.token !== token) {
