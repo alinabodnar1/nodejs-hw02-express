@@ -45,12 +45,10 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
-
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
-  // res.json({
-  //   token,
-  // })
+  await User.findByIdAndUpdate(user._id, { token });
+
   res.status(200).json({
     token,
     user: {
@@ -60,7 +58,28 @@ const login = async (req, res) => {
   });
 };
 
+const getCurrent = async (req, res) => {
+  // вся інформація про user вже є в req.user
+  const { email, subscription } = req.user;
+  res.status(200).json({
+    email,
+    subscription,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+
+  await User.findByIdAndUpdate(_id, { token: "" });
+
+  res.status(204).json({
+    message: "No Content",
+  });
+};
+
 module.exports = {
   register: decorator(register),
   login: decorator(login),
+  getCurrent: decorator(getCurrent),
+  logout: decorator(logout),
 };
