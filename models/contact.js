@@ -17,6 +17,11 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: Schema.Types.ObjectId,  // Зберігається id, яке генерує MongoDB
+    ref: 'user',                  // з якої колекції цей  id
+    required: true,
+  },
 }, { versionKey: false, timestamps: true });
 
 contactSchema.post("save", handleMongooseError);
