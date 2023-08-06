@@ -8,7 +8,8 @@ const fs = require('fs/promises');
 const { HttpError, decorator } = require("../helpers");
 
 const { SECRET_KEY } = process.env;
-const avatarsDir = path.join(__dirname, '../', "public", "avatars");
+
+const avatarsDir = path.join(__dirname, '../', "public", "avatars"); 
 
 const register = async (req, res) => {
   // перевірка на унікальність email при реєстрації/409 Conflict
