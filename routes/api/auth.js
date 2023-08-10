@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {register, login, getCurrent, logout} = require('../../controllers/auth');
+const {register, login, getCurrent, logout, verify} = require('../../controllers/auth');
 
 const {schemas} = require('../../models/user');
 
@@ -10,6 +10,8 @@ const router = express.Router();
 
 // signup
 router.post('/register', validateBody(schemas.registerSchema), register);
+
+router.get("verify/:verificationToken", verify);
 
 // signin
 router.post('/login', validateBody(schemas.loginSchema), login);
