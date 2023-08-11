@@ -34,7 +34,6 @@ const register = async (req, res) => {
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
-      verificationToken: newUser.verificationToken,
     },
   });
 };
@@ -61,7 +60,8 @@ const resendVerify = async (req, res) => {
   if (!user){
     throw HttpError(404, "User not found");
   }
-  if (!user.verify){
+
+  if (user.verify){
     res.status(400).json({
       message: 'Verification has already been passed', 
     });
