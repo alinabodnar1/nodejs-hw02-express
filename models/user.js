@@ -29,7 +29,7 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, 'Verify token is required']
+      required: [true, 'Verify token is required'],
     },
   },
   { versionKey: false, timestamps: true }
@@ -71,9 +71,19 @@ const loginSchema = Joi.object({
   }),
 });
 
+// схема для перевірки email для верифікаці (повторна відправка email користувачу з посиланням)
+const verifySchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "any.required": ` Missing required email field`,
+    "string.empty": ` String is empty. Enter email`,
+    "string.pattern.base": "Email is not valid",
+  }),
+});
+
 const schemas = {
   registerSchema,
   loginSchema,
+  verifySchema,
 };
 
 const User = model("user", userSchema);

@@ -17,10 +17,11 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const verificationToken = nanoid(5);
+  const verificationToken = nanoid();
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({ ...req.body, password: hashPassword, verificationToken });
 
+  // Створення листа верифікації
   const verifyEmail = {
       to: email,
       subject: "Verify email",
@@ -53,6 +54,32 @@ const verify = async (req, res) => {
   })
 }
 
+const resendVerify = async (req, res) => {
+  const {email} = req.body;
+  const user = await User.findOne({email});
+
+  if (!user){
+    throw HttpError(404, "User not found");
+  }
+  if (!user.verify){
+    res.status(400).json({
+      message: 'Verification has already been passed', 
+    });
+    return;
+  }
+   // Повторний лист верифікації
+   const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blanc" href="${BASE_URL}/users/verify/${user.verificationToken}">Click to verify email</a>`,
+}
+
+await sendEmail(verifyEmail);
+
+res.status(200).json({
+  message: 'Verification email sent', 
+});
+}
 
 const login = async (req, res) => {
   // перевірка чи є користувач з таким email/401 Unauthorized
@@ -111,6 +138,7 @@ const logout = async (req, res) => {
 module.exports = {
   register: decorator(register),
   verify: decorator(verify),
+  resendVerify: decorator(resendVerify),
   login: decorator(login),
   getCurrent: decorator(getCurrent),
   logout: decorator(logout),
