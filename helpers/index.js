@@ -5,5 +5,5 @@ const HttpError = require('./HttpError');
 module.exports = {
   decorator,
   handleMongooseError,
-  HttpError,
+  HttpError
 }
