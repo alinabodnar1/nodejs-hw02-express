@@ -1,6 +1,7 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nanoid = require("nanoid");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
@@ -25,7 +26,7 @@ const register = async (req, res) => {
 
   const verificationToken = nanoid();
 
-  const newUser = await User.create({ ...req.body, password: hashPassword, verificationToken });
+  // const newUser = await User.create({ ...req.body, password: hashPassword, verificationToken });
 
   // Створення листа верифікації
   const verifyEmail = {
@@ -37,9 +38,11 @@ const register = async (req, res) => {
   await sendEmail(verifyEmail);
 
   const avatarURL = gravatar.url(email);
+
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    verificationToken,
     avatarURL,
   });
 
