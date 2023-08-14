@@ -1,11 +1,16 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {nanoid}=require("nanoid");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+const Jimp = require("jimp");
 
 const { HttpError, decorator, sendEmail } = require("../helpers");
 
 const { SECRET_KEY, BASE_URL } = process.env;
+
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   // перевірка на унікальність email при реєстрації/409 Conflict
@@ -17,6 +22,7 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+
   const verificationToken = nanoid();
 
   const newUser = await User.create({ ...req.body, password: hashPassword, verificationToken });
@@ -29,6 +35,14 @@ const register = async (req, res) => {
   }
 
   await sendEmail(verifyEmail);
+
+  const avatarURL = gravatar.url(email);
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
+
 
   res.status(201).json({
     user: {
@@ -135,6 +149,32 @@ const logout = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+
+  const { path: tmpUpload, originalname } = req.file;
+
+  const filename = `${_id}_${originalname}`;
+
+  const resultUpload = path.join(avatarsDir, filename);
+
+  const image = await Jimp.read(tmpUpload);
+
+  await image
+        .resize(250, 250)
+        .writeAsync(tmpUpload);
+
+  await fs.rename(tmpUpload, resultUpload);
+
+  const avatarURL = path.join("avatars", filename);
+
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({
+    avatarURL,
+  });
+};
+
 module.exports = {
   register: decorator(register),
   verify: decorator(verify),
@@ -142,4 +182,5 @@ module.exports = {
   login: decorator(login),
   getCurrent: decorator(getCurrent),
   logout: decorator(logout),
+  updateAvatar: decorator(updateAvatar),
 };
