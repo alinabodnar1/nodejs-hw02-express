@@ -1,7 +1,7 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const nanoid = require("nanoid");
+const {nanoid} = require("nanoid");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
